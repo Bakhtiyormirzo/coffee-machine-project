@@ -51,11 +51,14 @@ INPUT_LIST = ["espresso", "latte", "cappuccino", "price", "report", "off"]
 running = True
 while running:
     coffee = input("What would you like (espresso/latte/cappuccino)? ")
+
     TRANSACTION_SUCCESS = False 
 
+    # checks for spelling issues
     if coffee not in INPUT_LIST:
         continue
 
+    # ending the program
     if coffee == "off":
         running = False
         continue
@@ -80,19 +83,25 @@ while running:
         continue
 
 
+    # taking the order
     else:
+
+        # checking if there is enough water
         if (RESOURCE["water"] - INGREDIENTS[f"{coffee}"]["water"]) < 0:
             print("Sorry, there is not enough water")
             continue
         
+        # checking if there is enough milk
         elif (RESOURCE["milk"] - INGREDIENTS[f"{coffee}"]["milk"]) < 0:
             print("Sorry, there is not enough milk")
             continue
 
+        # checking if there is enough coffee
         elif (RESOURCE["coffee"] - INGREDIENTS[f"{coffee}"]["coffee"]) < 0:
             print("Sorry, there is not enough coffee")
             continue
 
+        # runs when there is enough resources to prepare the order
         else:
             print("Insert coins")
 
@@ -120,6 +129,7 @@ while running:
             # adding the money to the RESOURCE
             RESOURCE["money"] = round(RESOURCE["money"] + PRICE[f"{coffee}"], 2)
 
+            # amount of change to give back
             change = round(total - PRICE[f"{coffee}"], 2)
 
             difference = 0
@@ -130,8 +140,10 @@ while running:
                 "penny" : 0
             }
 
+            # used if there is not enough change
             breaking = False
 
+            # calculates how many coins will be given for each coin type
             while difference != change:
 
                 if COINS["quarter"] > 0 and round(difference + 0.25, 2) <= change:
@@ -155,11 +167,6 @@ while running:
                     refunding_coins["penny"] += 1
 
                 else:
-
-                    print("Difference:", difference)
-                    print("Change", change)
-
-
                     print("There is not enough change. Money refunded.")
 
                     # subtracting the insterted coins to the number of COINS
@@ -175,6 +182,7 @@ while running:
             if breaking:
                 continue
 
+            # printing the change: number of coins for each type of coin
             print("You are receiving: ")
             for k, v in refunding_coins.items():
                 print(MONEY[k], " value of ", v, "coins")
