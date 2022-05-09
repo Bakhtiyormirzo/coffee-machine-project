@@ -1,10 +1,8 @@
-
-
 RESOURCE = {
     "water" : 800,
     "milk" : 400,
-    "coffee" : 150,
-    "money" : 0
+    "coffee" : 50,
+    "money" : 10
 }
 
 INGREDIENTS = {
@@ -34,20 +32,35 @@ MONEY = {
     "penny" : 0.01
 }
 
+COINS = {
+    "quarter" : 10,
+    "dime" : 10,
+    "nickle" : 10,
+    "penny" : 10
+}
+
 PRICE = {
     "espresso" : 2.5,
     "latte" : 2.75,
     "cappuccino" : 4.5
 }
 
+INGREDIENT_LIST = ["water", "milk", "coffee"]
+INPUT_LIST = ["espresso", "latte", "cappuccino", "price", "report", "off"]
+
 running = True
 while running:
     coffee = input("What would you like (espresso/latte/cappuccino)? ")
+    TRANSACTION_SUCCESS = False 
+
+    if coffee not in INPUT_LIST:
+        continue
 
     if coffee == "off":
         running = False
         continue
 
+    # printing report here
     if coffee == "report":
         for k, v in RESOURCE.items():
             if k == "water" or k == "milk":
@@ -57,9 +70,156 @@ while running:
             else:
                 print(f"{k} : ${v}")
 
-        pass # print report here --> whatever is left (water/milk/coffee/money)
+        continue
+
+    # printing PRICE here
+    if coffee == "price":
+        for k, v in PRICE.items():
+            print(k, " : ", v)
+
+        continue
+
 
     else:
-        pass
+        if (RESOURCE["water"] - INGREDIENTS[f"{coffee}"]["water"]) < 0:
+            print("Sorry, there is not enough water")
+            continue
+        
+        elif (RESOURCE["milk"] - INGREDIENTS[f"{coffee}"]["milk"]) < 0:
+            print("Sorry, there is not enough milk")
+            continue
+
+        elif (RESOURCE["coffee"] - INGREDIENTS[f"{coffee}"]["coffee"]) < 0:
+            print("Sorry, there is not enough coffee")
+            continue
+
+        else:
+            print("Insert coins")
+
+        # calculating the total value of inserted coins
+        total = 0
+        coins = dict()
+        for k, v in MONEY.items():
+            coins[k] = int(input(f"Insert {v}: "))
+            total += v * coins[k]
+
+        # check if enough money is inserted for selected drink
+        if total < PRICE[f"{coffee}"]:
+            print(f"Sorry that is not enough money. Money refunded.")
+            continue
+
+        # offering the change
+        elif total > PRICE[f"{coffee}"]:
+            
+            print("You entered more money. Receive the change.")
+
+            # adding the insterted coins to the number of COINS
+            for k in COINS.keys():
+                COINS[k] += coins[k] 
+
+            # adding the money to the RESOURCE
+            RESOURCE["money"] = round(RESOURCE["money"] + PRICE[f"{coffee}"], 2)
+
+            change = round(total - PRICE[f"{coffee}"], 2)
+
+            difference = 0
+            refunding_coins = {
+                "quarter" : 0,
+                "dime" : 0,
+                "nickle" : 0,
+                "penny" : 0
+            }
+
+            breaking = False
+
+            while difference != change:
+
+                if COINS["quarter"] > 0 and round(difference + 0.25, 2) <= change:
+                    difference += 0.25
+                    difference = round(difference, 2)
+                    refunding_coins["quarter"] += 1
+
+                elif COINS["dime"] > 0 and difference + 0.1 <= change:
+                    difference += 0.1
+                    difference = round(difference, 2)
+                    refunding_coins["dime"] += 1
+
+                elif COINS["nickle"] > 0 and difference + 0.05 <= change:
+                    difference += 0.05
+                    difference = round(difference, 2)
+                    refunding_coins["nickle"] += 1
+
+                elif COINS["penny"] > 0 and difference + 0.01 <= change:
+                    difference += 0.01
+                    difference = round(difference, 2)
+                    refunding_coins["penny"] += 1
+
+                else:
+
+                    print("Difference:", difference)
+                    print("Change", change)
+
+
+                    print("There is not enough change. Money refunded.")
+
+                    # subtracting the insterted coins to the number of COINS
+                    for k in COINS.keys():
+                        COINS[k] -= coins[k] 
+
+                     # subtracting the money to the RESOURCE
+                    RESOURCE["money"] -= total
+
+                    breaking = True
+                    break
+
+            if breaking:
+                continue
+
+            print("You are receiving: ")
+            for k, v in refunding_coins.items():
+                print(MONEY[k], " value of ", v, "coins")
+
+            TRANSACTION_SUCCESS = True 
+
+        # condition when total money inserted is equal to price, so there is no change needed
+        else:
+            # adding the insterted coins to the number of COINS
+            for k in COINS.keys():
+                COINS[k] += coins[k] 
+
+            TRANSACTION_SUCCESS = True 
+
+            # adding the money to the RESOURCE
+            RESOURCE["money"] += total
+
+            TRANSACTION_SUCCESS = True 
+        
+        if TRANSACTION_SUCCESS:
+
+            # index for ingredient list (water/milk/coffee)
+            i = 0
+
+            for k in RESOURCE.keys():
+
+                # breaks the loop after updating the water/milk/coffee, not money
+                if i == 3:
+                    break
+
+                RESOURCE[k] -= INGREDIENTS[f"{coffee}"][INGREDIENT_LIST[i]]
+                i += 1
+
+        print(f"Here is your {coffee}. Enjoy!")
+                
+
+             
+
+
+
+
+
+
+
+
+
 
 
