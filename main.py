@@ -3,7 +3,8 @@
 RESOURCE = {
     "water" : 800,
     "milk" : 400,
-    "coffee" : 150
+    "coffee" : 150,
+    "money" : 0
 }
 
 INGREDIENTS = {
@@ -48,11 +49,17 @@ while running:
         continue
 
     if coffee == "report":
+        for k, v in RESOURCE.items():
+            if k == "water" or k == "milk":
+                print(f"{k} : {v}ml")
+            elif k == "coffee":
+                print(f"{k} : {v}g")
+            else:
+                print(f"{k} : ${v}")
+
         pass # print report here --> whatever is left (water/milk/coffee/money)
 
     else:
-        
-        
         pass
 
 
