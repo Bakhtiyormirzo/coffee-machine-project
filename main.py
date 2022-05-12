@@ -46,7 +46,7 @@ PRICE = {
 }
 
 INGREDIENT_LIST = ["water", "milk", "coffee"]
-INPUT_LIST = ["espresso", "latte", "cappuccino", "price", "report", "off"]
+INPUT_LIST = ["espresso", "latte", "cappuccino", "price", "report", "off", "reset", "coins"]
 
 running = True
 while running:
@@ -78,10 +78,24 @@ while running:
     # printing PRICE here
     if coffee == "price":
         for k, v in PRICE.items():
-            print(k, " : ", v)
+            print(f"{k} : ${v}")
+
+        continue
+    
+    # resetting the resources
+    if coffee == "reset":
+        RESOURCE["water"] = 800
+        RESOURCE["milk"] = 400
+        RESOURCE["coffee"] = 50
 
         continue
 
+    # printing the coins
+    if coffee == "coins":
+        for k, v in COINS.items():
+            print(f"{k} : {v}")
+
+        continue
 
     # taking the order
     else:
@@ -185,7 +199,7 @@ while running:
             # printing the change: number of coins for each type of coin
             print("You are receiving: ")
             for k, v in refunding_coins.items():
-                print(MONEY[k], " value of ", v, "coins")
+                print(f"${MONEY[k]} value of {v} coins")
 
             TRANSACTION_SUCCESS = True 
 
