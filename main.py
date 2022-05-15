@@ -207,9 +207,7 @@ while running:
         else:
             # adding the insterted coins to the number of COINS
             for k in COINS.keys():
-                COINS[k] += coins[k] 
-
-            TRANSACTION_SUCCESS = True 
+                COINS[k] += coins[k]  
 
             # adding the money to the RESOURCE
             RESOURCE["money"] += total
